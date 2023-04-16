@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Аномалии{% endblock %}
+{% block style %}
+
+{% endblock %}
+{% block content %}
+    <div id="portrait-buttons">
+    <div>
+        <span>Наличие портрета:</span>
+        <span class="status-bar">
+			<span class="status active"></span>
+		</span>
+    </div>
+    <div>
+        <span>Целостность портрета:</span>
+        <span class="status-bar">
+			<span class="status"></span>
+		</span>
+    </div>
+    <button class="button" id="create-portrait-button">Сформировать портрет</button>
+    <button class="button" id="show-portrait-button">Показать портрет</button>
+    <div id="portrait-info">
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        jQuery(function () {
+            $("#create-portrait-button").click(function () {
+                $.ajax("create_portrait", {
+                    method: "GET",
+                    success: function (data) {
+                        console.log("create");
+                    }
+                });
+            });
+
+            $("#show-portrait-button").click(function () {
+                $.ajax("show_portrait", {
+                    method: "GET",
+                    success: function (data) {
+                        console.log(data.data);
+                    }
+                });
+            });
+
+        })
+    </script>
+{% endblock %}
+
+
