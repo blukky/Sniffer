@@ -11,7 +11,7 @@ def scan_interfaces():
     interfaces = []
     with os.popen('ip link show') as f:
         for line in f:
-            if 'state UP' in line:
+            if 'status: active' in line:
                 interface = line.split()[1].strip(':')
                 interfaces.append(interface)
     return interfaces
