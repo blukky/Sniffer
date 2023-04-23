@@ -42,12 +42,7 @@ for table_name in table_names:
         if check_result[0] > 0:
             continue
         # проверка наличия сигнатур в данном пакете
-        for signature in signatures:
-            if signature[0] in raw_packet or signature[0] in packet:
-                print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - Signature {signature[1]} detected in table {table_name} packet {packet}")
-                # сохранение информации о проверенном пакете
-                check_cursor.execute("INSERT INTO checked_packets (table_name, packet, signature) VALUES (?, ?, ?)", (table_name, packet, signature[0]))
-                check_conn.commit()
+
 
 # закрытие соединений с базами данных
 sig_cursor.close()

@@ -3,10 +3,12 @@ from .models import *
 from django.http import JsonResponse
 # Create your views here.
 from scapy.all import sniff
-
+from .sniff import scan_interfaces
 
 def main(request):
-    return render(request, "sniffer.html")
+    # interfaces = scan_interfaces()
+    interfaces = ["qwe", "qwqwrqrw", "qwert"]
+    return render(request, "sniffer.html", {"interfaces": interfaces})
 
 
 def journal(request):

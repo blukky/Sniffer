@@ -18,7 +18,7 @@ class SniffRun(models.Model):
 
 class Packet(models.Model):
     start_sniffer = models.ForeignKey(SniffRun, on_delete=models.CASCADE, verbose_name="Старт снифера")
-    date = models.DateTimeField(verbose_name="Время получения пакета")
+    date = models.DateTimeField(auto_now=True, verbose_name="Время получения пакета")
     packet = models.TextField(verbose_name="Декодированный пакет")
     raw_packet = models.TextField(verbose_name="Сырой пакет")
 

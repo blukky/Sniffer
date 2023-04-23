@@ -3,7 +3,8 @@ import struct
 import sys
 import os
 import datetime
-import sqlite3
+from .models import Packet, SniffRun
+
 
 
 # Функция сканирования доступных интерфейсов
@@ -31,110 +32,7 @@ def select_interface(interfaces):
     return selected_interface
 
 # Функция сниффинга на выбранном интерфейсе
-def sniff(interface):
-    # Создание RAW сокета для сниффинга
-    try:
-        sniffer = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003))
-    except socket.error as e:
-        print("Ошибка создания сокета: ", e)
-        sys.exit()
 
-    # Привязка сокета к интерфейсу
-    sniffer.bind((interface, 0))
-
-    # Сниффинг пакетов
-    while True:
-        raw_packet, addr = sniffer.recvfrom(65535)
-        time_for_table = "TIME OF RECEIPT: " + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        data_for_table = ''
-        eth_header = decode_ethernet_header(raw_packet)
-        if eth_header['protocol'] == 0x0800:
-            # IPv4-пакет
-            ip_header = decode_ip_packet(raw_packet[14:])
-            print(ip_header)
-            data_for_table += str(ip_header)
-            if ip_header['protocol'] == 1:
-                # ICMP-пакет
-                icmp_header = decode_icmp_packet(ip_header['data'])
-                print(icmp_header)
-                data_for_table += str(icmp_header)
-            elif ip_header['protocol'] == 6:
-                # TCP-пакет
-                tcp_header = decode_tcp_packet(ip_header['data'])
-                print(tcp_header)
-                data_for_table += str(tcp_header)
-                if tcp_header['dst_port'] == 80 or tcp_header['src_port'] == 80:
-                    # HTTP-пакет
-                    try:
-                        http_header = decode_http_packet(tcp_header['data'])
-                        print(http_header)
-                        data_for_table += str(http_header)
-                    except UnicodeDecodeError:
-                        continue
-                elif tcp_header['dst_port'] == 443 or tcp_header['src_port'] == 443:
-                    # HTTPS-пакет
-                    https_header = decode_https_packet(tcp_header['data'])
-                    print(https_header)
-                    data_for_table += str(https_header)
-            elif ip_header['protocol'] == 17:
-                # UDP-пакет
-                udp_header = decode_udp_packet(ip_header['data'])
-                print(udp_header)
-                data_for_table += str(udp_header)
-                if udp_header['dst_port'] == 80 or udp_header['src_port'] == 80:
-                    # HTTP-пакет
-                    http_header = decode_http_packet(udp_header['data'])
-                    print(http_header)
-                    data_for_table += str(http_header)
-                elif udp_header['dst_port'] == 443 or udp_header['src_port'] == 443:
-                    # HTTPS-пакет
-                    https_header = decode_https_packet(udp_header['data'])
-                    print(https_header)
-                    data_for_table += str(https_header)
-            else:
-                print(ip_header)
-                data_for_table += str(ip_header)
-
-#        elif eth_header['protocol'] == 0x0806:
-#            # ARP-пакет
-#            arp_header = decode_arp_packet(raw_packet[14:])
-#            print(arp_header)
-
-#        elif eth_header['protocol'] == 0x86DD:
-#            # IPv6-пакет
-#            ipv6_header = decode_ipv6_packet(raw_packet[14:])
- #           if ipv6_header['next_header'] == 58:
- #               # ICMPv6-пакет
- #               icmpv6_header = decode_icmpv6_packet(ipv6_header['data'])
- #               print(icmpv6_header)
- #           elif ipv6_header['next_header'] == 6:
- #               # TCP-пакет
- #               tcp_header = decode_tcp_packet(ipv6_header['data'])
- #               print(tcp_header)
-  #          elif ipv6_header['next_header'] == 17:
-  #              # UDP-пакет
-  #              udp_header = decode_udp_packet(ipv6_header['data'])
-  #              print(udp_header)
-  #              if udp_header['dst_port'] == 80 or udp_header['src_port'] == 80:
-   #                 # HTTP-пакет
-   #                 http_header = decode_http_packet(udp_header['data'])
-   #                 print(http_header)
-   #             elif udp_header['dst_port'] == 443 or udp_header['src_port'] == 443:
-   #                 # HTTPS-пакет
-    #                https_header = decode_https_packet(udp_header['data'])
-    #                print(https_header)
-     #       else:
-     #           print(ipv6_header)
-        
-        else:
-            print(f"Неизвестный протокол: {eth_header['protocol']}")
-            her = f"Неизвестный протокол: {eth_header['protocol']}"
-            data_for_table += str(her)
- 
-        if data_for_table:
-            packet = "DECODING PACKET: " + data_for_table
-            raw_packet_plus = 'RAW PACKET: ' + str(raw_packet)
-            insert_packet(db_conn, table_name, time_for_table, packet, raw_packet_plus)
 
 def decode_ethernet_header(raw_packet):
     ethernet_header = {}
