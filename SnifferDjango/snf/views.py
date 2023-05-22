@@ -4,10 +4,12 @@ from django.http import JsonResponse
 # Create your views here.
 from scapy.all import sniff
 from .sniff import scan_interfaces
+import time
+import pickle
 
 def main(request):
-    # interfaces = scan_interfaces()
-    interfaces = ["qwe", "qwqwrqrw", "qwert"]
+    interfaces = scan_interfaces()
+    # interfaces = ["qwe", "qwqwrqrw", "qwert"]
     return render(request, "sniffer.html", {"interfaces": interfaces})
 
 
@@ -33,7 +35,7 @@ def create_portrait(request):
         bytes = sum(packet_sizes)
         print(packets, packet_sizes, packet_intervals, bytes)
         network_info = NetworkInfo.objects.create(packets=len(packets),
-                                                  packsets_bytes=bytes,
+                                                  packets_bytes=bytes,
                                                   packets_size=pickle.dumps(packet_sizes).decode('latin1'),
                                                   packets_interval=pickle.dumps(packet_intervals).decode('latin1'))
 

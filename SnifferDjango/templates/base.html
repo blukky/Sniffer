@@ -78,10 +78,10 @@
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            height: 40px;
-            width: 40px;
+            height: 50px;
+            width: 50px;
             transition: background-color 0.3s ease;
-            background-image: url("power-button.png");
+            background-image: url("{% static "images/start.png" %}");
             background-repeat: no-repeat;
             background-position: center;
             background-size: 60%;
@@ -108,6 +108,13 @@
             border-radius: 5px;
             min-height: 200px;
         }
+        .navbar-custom {
+            background-color: #212121;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-text {
+            color: #d9dee4;
+        }
         {% block style %}{% endblock %}
 
 
@@ -115,28 +122,42 @@
 </head>
 <body>
 <header>
-    <img id="program-title" src="program-title.png" alt="Название программы">
+    <nav class="navbar navbar-custom">
+        <a class="navbar-brand" href="{% url "main" %}">
+        <img src="{% static "images/logo.png" %}" width="30" height="30" class="d-inline-block align-top" alt="Сетевой караул">
+        Сетевой караул
+        </a>
+    </nav>
     <button class="power-button"></button>
     <div class="status-bar">
         <div>
-            <img src="{% static "images/" %}" alt="Иконка статуса 1">
-            <span class="status active"></span>
+            <img src="{% static "images/sit.png" %}" width="25" height="80" style="margin: 15px 15px 15px 5px" alt="Иконка статуса сигнатур">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+            </div>
         </div>
         <div>
-            <img src="status-icon-2.png" alt="Иконка статуса 2">
-            <span class="status"></span>
+            <img src="{% static "images/lupa.png" %}" width="25" height="80" style="margin: 15px 15px 15px 5px" alt="Иконка статуса сниффера">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+            </div>
         </div>
         <div>
-            <img src="status-icon-3.png" alt="Иконка статуса 3">
-            <span class="status"></span>
+            <img src="{% static "images/smerh.png" %}" width="25" height="80" style="margin: 15px 15px 15px 5px" alt="Иконка статуса аномалии">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+            </div>
         </div>
     </div>
 </header>
 <div id="buttons">
-    <a href="{% url "main" %}" class="button">Сниффер</a>
-    <a href="{% url "journal" %}" class="button">Журнал</a>
-    <a class="button">Статистика</a>
-    <a href="{% url "anomal" %}" class="button">Аномалии</a>
+    <a href="{% url "main" %}" class="button"><font color="#d9dee4">Сниффер</font></a>
+    <a href="{% url "journal" %}" class="button"><font color="#d9dee4">Журнал</font></a>
+    <a class="button"><font color="#d9dee4">Статистика</font></a>
+    <a href="{% url "anomal" %}" class="button"><font color="#d9dee4">Аномалии</font></a>
 </div>
 {% block content %}
 {% endblock %}

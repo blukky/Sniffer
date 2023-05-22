@@ -16,6 +16,7 @@ jQuery(function () {
         }
 
         $("#stop").click(function () {
+            socket.send("close");
             socket.close();
         })
     })

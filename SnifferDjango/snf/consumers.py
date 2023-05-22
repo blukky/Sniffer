@@ -1,7 +1,9 @@
 import sys
+import threading
 from datetime import datetime
-from socket import socket
+import socket
 from channels.generic.websocket import WebsocketConsumer
+from channels.exceptions import StopConsumer
 import json
 import time
 from .models import Packet, SniffRun, Signature, CheckedPackets
@@ -9,25 +11,22 @@ from .sniff import decode_ethernet_header, decode_ip_packet, decode_icmp_packet,
     decode_https_packet, decode_udp_packet
 import string
 import random
+from threading import Thread
 
+class Sniff(Thread):
+    def __init__(self, interface, ws,  *args, **kwargs):
+        super(Sniff, self).__init__(*args, **kwargs)
+        self.interface = interface
+        self.ws = ws
+        self._stop = threading.Event()
 
-class SniffConsumer(WebsocketConsumer):
+    def stop(self):
+        self._stop.set()
 
-    def get_random_string(self, length):
-        # choose from all lowercase letter
-        letters = string.ascii_lowercase
-        result_str = ''.join(random.choice(letters) for i in range(length))
-        return result_str
+    def stopped(self):
+        return self._stop.is_set()
 
-    def connect(self):
-        self.interface = self.scope["url_route"]["kwargs"]["interface"]
-        self.accept()
-        self.sniff()
-
-    def receive(self, text_data=None, bytes_data=None):
-        print(text_data)
-
-    def sniff(self):
+    def run(self):
         # Создание RAW сокета для сниффинга
         try:
             sniffer = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003))
@@ -42,6 +41,8 @@ class SniffConsumer(WebsocketConsumer):
         sniff_run = SniffRun.objects.create()
         signatures = Signature.objects.all()
         while True:
+            if self.stopped():
+                break
             raw_packet, addr = sniffer.recvfrom(65535)
             data_for_table = ''
             eth_header = decode_ethernet_header(raw_packet)
@@ -106,11 +107,32 @@ class SniffConsumer(WebsocketConsumer):
                 packet = "DECODING PACKET: " + data_for_table
                 raw_packet_plus = 'RAW PACKET: ' + str(raw_packet)
                 data = Packet.objects.create(start_sniffer=sniff_run, packet=packet, raw_packet=raw_packet_plus)
-                self.send(json.dumps(
+                self.ws.send(json.dumps(
                     {"type": "packet", "time": data.date.strftime("%m/%d/%Y, %H:%M:%S"), "packet": data.packet,
                      "raw_packet": data.raw_packet}))
                 for signature in signatures:
-                    if signature.signature in raw_packet or signature.signature in packet:
+                    if signature.signature in raw_packet_plus or signature.signature in packet:
                         CheckedPackets.objects.create(packet=data, signature=signature)
-                        self.send(json.dumps(
+                        self.ws.send(json.dumps(
                             {"type": "sign", "name": signature.name}))
+class SniffConsumer(WebsocketConsumer):
+
+    def get_random_string(self, length):
+        # choose from all lowercase letter
+        letters = string.ascii_lowercase
+        result_str = ''.join(random.choice(letters) for i in range(length))
+        return result_str
+
+    def connect(self):
+        self.interface = self.scope["url_route"]["kwargs"]["interface"]
+        self.accept()
+        self.sniff = Sniff(self.interface, self)
+        self.sniff.start()
+
+    def receive(self, text_data=None, bytes_data=None):
+        self.sniff.stop()
+        self.close()
+
+
+    def disconnect(self, code):
+        raise StopConsumer
