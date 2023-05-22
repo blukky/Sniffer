@@ -69,3 +69,9 @@ def show_portrait(request):
                                   "bytes": last_network_info.packets_bytes,
                                   "size": last_network_info.packets_size,
                                   "interval": last_network_info.packets_interval}})
+
+
+def stat(request):
+    check = CheckedPackets.objects.all()
+    #TODO: сделать список по 2 элемента [[f,f], [f,f], ...]
+    return render(request, "stat.html", {"check": check})

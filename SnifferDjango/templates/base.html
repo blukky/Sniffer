@@ -131,49 +131,51 @@
     <button class="power-button"></button>
     <div class="status-bar">
         <div>
-            <img src="{% static "images/sit.png" %}" width="25" height="80" style="margin: 15px 15px 15px 5px" alt="Иконка статуса сигнатур">
+            <img src="{% static 'images/sit.png' %}" width="25" height="80" style="margin: 15px 15px 15px 5px" alt="Иконка статуса сигнатур">
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault1">
+                <label class="form-check-label" for="flexSwitchCheckDefault1"></label>
             </div>
         </div>
         <div>
-            <img src="{% static "images/lupa.png" %}" width="25" height="80" style="margin: 15px 15px 15px 5px" alt="Иконка статуса сниффера">
+            <img src="{% static 'images/lupa.png' %}" width="25" height="80" style="margin: 15px 15px 15px 5px" alt="Иконка статуса сниффера">
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault2">
+                <label class="form-check-label" for="flexSwitchCheckDefault2"></label>
             </div>
         </div>
         <div>
-            <img src="{% static "images/smerh.png" %}" width="25" height="80" style="margin: 15px 15px 15px 5px" alt="Иконка статуса аномалии">
+            <img src="{% static 'images/smerh.png' %}" width="25" height="80" style="margin: 15px 15px 15px 5px" alt="Иконка статуса аномалии">
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault3">
+                <label class="form-check-label" for="flexSwitchCheckDefault3"></label>
             </div>
         </div>
     </div>
 </header>
 <div id="buttons">
-    <a href="{% url "main" %}" class="button"><font color="#d9dee4">Сниффер</font></a>
-    <a href="{% url "journal" %}" class="button"><font color="#d9dee4">Журнал</font></a>
-    <a class="button"><font color="#d9dee4">Статистика</font></a>
-    <a href="{% url "anomal" %}" class="button"><font color="#d9dee4">Аномалии</font></a>
+    <a href="{% url 'main' %}" class="button"><font color="#d9dee4">Сниффер</font></a>
+    <a href="{% url 'journal' %}" class="button"><font color="#d9dee4">Журнал</font></a>
+    <a href="{% url 'stat' %}"  class="button"><font color="#d9dee4">Статистика</font></a>
+    <a href="{% url 'anomal' %}" class="button"><font color="#d9dee4">Аномалии</font></a>
 </div>
 {% block content %}
 {% endblock %}
 </body>
 
 
-<script src="{% static "js/jquery-3.6.4.min.js" %}" type="text/javascript"></script>
-<script src="{% static "js/popper.min.js" %}"
+<script src="{% static 'js/jquery-3.6.4.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/popper.min.js' %}"
         integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"
         type="text/javascript"></script>
-<script src="{% static "js/bootstrap.bundle.min.js" %}"
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"
         type="text/javascript"></script>
-<script src="{% static "js/bootstrap.min.js" %}"
+<script src="{% static 'js/bootstrap.min.js' %}"
         integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"
         type="text/javascript"></script>
-<script src="{% static "js/datatables.min.js" %}" type="text/javascript"></script>
-{% block scripts %}{% endblock %}
+<script src="{% static 'js/datatables.min.js' %}" type="text/javascript"></script>
+{% block scripts %}
+
+{% endblock %}
 </html>
